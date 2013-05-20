@@ -1,3 +1,7 @@
+2013-05-20 - 0.3.0
+* Change to 2-space indent.
+* Update README and use markdown.
+
 2012-04-08 - 0.2.0
 * Clean up the module to match current puppetlabs guidelines.
 

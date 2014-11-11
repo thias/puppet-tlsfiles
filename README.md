@@ -30,6 +30,7 @@ To install keys and certificates present under :
 
 * `mymodulename/templates/tlsfiles/crt/www.example.com.crt`
 * `mymodulename/templates/tlsfiles/key/www.example.com.key`
+* `mymodulename/templates/tlsfiles/crt/IntermediateCA.crt`
 
 In `site.pp` to centralize all of your files :
 
@@ -37,18 +38,29 @@ In `site.pp` to centralize all of your files :
 Tlsfile { srcdir => 'mymodulename/tlsfiles' }
 ```
 
-Install both files to the default `/etc/pki/tls/` locations :
+Install key and certificate files to the default locations :
 
 ```puppet
 tlsfile { 'www.example.com': }
 ```
 
-Install a PEM file containing both to a custom location :
+Install a PEM file containing key and certificate to a custom location (it will
+be called `www.example.com.pem`) :
 
 ```puppet
 tlsfile { 'www.example.com':
-  keypath => '/etc/foo/www.example.com.pem',
+  keypath => '/etc/foo',
   pem     => true,
 }
 ```
+
+The same as the above, but including the intermediate CA certificate :
+```puppet
+tlsfile { 'www.example.com':
+  keypath => '/etc/foo',
+  intcert => 'IntermediateCA',
+  pem     => true,
+}
+```
+
 

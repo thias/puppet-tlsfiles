@@ -11,13 +11,44 @@ joining keys and certificates into single files.
 
 * `tlsfiles` : Manage key and certificate
 
+## Parameters
+
+* `$crtpath = '/etc/pki/tls/certs'`
+* `$keypath = '/etc/pki/tls/private'`
+* `$crtmode = '0644'`
+* `$keymode = '0600'`
+* `$owner   = 'root'`
+* `$group   = 'root'`
+* `$intcert = false`
+* `$intjoin = false`
+* `$pem     = false`
+* `$srcdir  = 'tlsfiles'`
+
 ## Examples
 
-To install keys and certificates present under
-`mymodulename/templates/tlsfiles/{key,crt}/` :
+To install keys and certificates present under :
 
-    # In site.pp
-    Tlsfile { srcdir => 'mymodulename/tlsfiles' }
-    # For a given node
-    tlsfile { [ 'www.example.com', 'admin.example.com' ]: }
+* `mymodulename/templates/tlsfiles/crt/www.example.com.crt`
+* `mymodulename/templates/tlsfiles/key/www.example.com.key`
+
+In `site.pp` to centralize all of your files :
+
+```puppet
+Tlsfile { srcdir => 'mymodulename/tlsfiles' }
+```
+
+Install both files to the default `/etc/pki/tls/` locations :
+
+```puppet
+tlsfile { 'www.example.com': }
+```
+
+Install a PEM file containing both to a custom location :
+
+```puppet
+tlsfile { 'www.example.com':
+  keypath => '/etc/foo/www.example.com.pem',
+  pem     => true,
+}
+```
 

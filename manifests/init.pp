@@ -25,8 +25,8 @@ define tlsfiles (
   # For PEM, we group crt+key(+intcert) in a single file
   if $pem {
     $pemcontent = $intcert ? {
-      true  => template("${srcdir}/crt/${cn}.crt","${srcdir}/key/${cn}.key","${srcdir}/crt/${intcert}.crt"),
-      false => template("${srcdir}/crt/${cn}.crt","${srcdir}/key/${cn}.key"),
+      false   => template("${srcdir}/crt/${cn}.crt","${srcdir}/key/${cn}.key"),
+      default => template("${srcdir}/crt/${cn}.crt","${srcdir}/key/${cn}.key","${srcdir}/crt/${intcert}.crt"),
     }
     # PEM file
     file { "${keypath}/${cn}.pem":

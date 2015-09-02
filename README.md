@@ -35,20 +35,20 @@ To install keys and certificates present under :
 In `site.pp` to centralize all of your files :
 
 ```puppet
-Tlsfile { srcdir => 'mymodulename/tlsfiles' }
+Tlsfiles { srcdir => 'mymodulename/tlsfiles' }
 ```
 
 Install key and certificate files to the default locations :
 
 ```puppet
-tlsfile { 'www.example.com': }
+tlsfiles { 'www.example.com': }
 ```
 
 Install a PEM file containing key and certificate to a custom location (it will
 be called `www.example.com.pem`) :
 
 ```puppet
-tlsfile { 'www.example.com':
+tlsfiles { 'www.example.com':
   keypath => '/etc/foo',
   pem     => true,
 }
@@ -56,7 +56,7 @@ tlsfile { 'www.example.com':
 
 The same as the above, but including the intermediate CA certificate :
 ```puppet
-tlsfile { 'www.example.com':
+tlsfiles { 'www.example.com':
   keypath => '/etc/foo',
   intcert => 'IntermediateCA',
   pem     => true,

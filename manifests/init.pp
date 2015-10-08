@@ -18,7 +18,7 @@ define tlsfiles (
   $intcert = false,
   $intjoin = false,
   $pem     = false,
-  $srcdir  = 'tlsfiles'
+  $srcdir  = 'tlsfiles',
   $service_name = undef,
 ) {
   

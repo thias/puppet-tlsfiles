@@ -20,6 +20,15 @@ define tlsfiles (
   $pem     = false,
   $srcdir  = 'tlsfiles'
 ) {
+  
+  # Set the default file notification to $service_name if it's defined.  
+  # Changes to the PEM or KEY file will trigger a restart of the service.  
+  if $service_name != undef {
+    File {
+      notify  => Service["$service_name"],
+    }
+  }
+
   # Use the definition's title as the CN which is also the file name
   $cn = $title
   # For PEM, we group crt+key(+intcert) in a single file

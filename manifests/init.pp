@@ -19,6 +19,7 @@ define tlsfiles (
   $intjoin = false,
   $pem     = false,
   $srcdir  = 'tlsfiles'
+  $service_name = undef,
 ) {
   
   # Set the default file notification to $service_name if it's defined.  

@@ -13,16 +13,17 @@ joining keys and certificates into single files.
 
 ## Parameters
 
-* `$crtpath = '/etc/pki/tls/certs'`
-* `$keypath = '/etc/pki/tls/private'`
-* `$crtmode = '0644'`
-* `$keymode = '0600'`
-* `$owner   = 'root'`
-* `$group   = 'root'`
-* `$intcert = false`
-* `$intjoin = false`
-* `$pem     = false`
-* `$srcdir  = 'tlsfiles'`
+* `$crtpath      = '/etc/pki/tls/certs'`
+* `$keypath      = '/etc/pki/tls/private'`
+* `$crtmode      = '0644'`
+* `$keymode      = '0600'`
+* `$owner        = 'root'`
+* `$group        = 'root'`
+* `$intcert      = false`
+* `$intjoin      = false`
+* `$pem          = false`
+* `$srcdir       = 'tlsfiles'`
+* `$service_name = undef`
 
 ## Examples
 
@@ -62,5 +63,13 @@ tlsfiles { 'www.example.com':
   pem     => true,
 }
 ```
-
+The service name to notify when the PEM or KEY files change.  The service name is defined elsewhere in your Puppet code.
+```puppet
+tlsfiles { 'www.example.com':
+  keypath => '/etc/foo',
+  intcert => 'IntermediateCA',
+  pem     => true,
+  service_name => 'lighttpd',
+}
+```
 

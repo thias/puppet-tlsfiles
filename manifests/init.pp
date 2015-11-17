@@ -18,15 +18,18 @@ define tlsfiles (
   $intcert = false,
   $intjoin = false,
   $pem     = false,
-  $srcdir  = 'tlsfiles'
+  $srcdir  = 'tlsfiles',
+  $crt     = '',
+  $key     = '',
+  $intermediate_crt = '',
 ) {
   # Use the definition's title as the CN which is also the file name
   $cn = $title
   # For PEM, we group crt+key(+intcert) in a single file
   if $pem {
     $pemcontent = $intcert ? {
-      false   => template("${srcdir}/crt/${cn}.crt","${srcdir}/key/${cn}.key"),
-      default => template("${srcdir}/crt/${cn}.crt","${srcdir}/key/${cn}.key","${srcdir}/crt/${intcert}.crt"),
+      false   => template($crt,$key),
+      default => template($crt,$intermediate_crt,$key),
     }
     # PEM file
     file { "${keypath}/${cn}.pem":
@@ -41,12 +44,12 @@ define tlsfiles (
       owner   => $owner,
       group   => $group,
       mode    => $keymode,
-      content => template("${srcdir}/key/${cn}.key"),
+      content => $key,
     }
     # Crt files (+ Intermediate)
     $crtcontent = $intjoin ? {
-      true  => template("${srcdir}/crt/${cn}.crt","${srcdir}/crt/${intcert}.crt"),
-      false => template("${srcdir}/crt/${cn}.crt"),
+      true  => template($crt,$intermediate_crt),
+      false => template($crt),
     }
     file { "${crtpath}/${cn}.crt":
       owner   => $owner,
@@ -60,7 +63,7 @@ define tlsfiles (
         owner   => $owner,
         group   => $group,
         mode    => $crtmode,
-        content => template("${srcdir}/crt/${intcert}.crt"),
+        content => template($intermediate_crt),
       }
     }
   }

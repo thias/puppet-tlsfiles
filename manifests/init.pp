@@ -9,6 +9,9 @@
 #  }
 #
 define tlsfiles (
+  $crt,
+  $key,
+  $intermediate_crt = '',
   $crtpath = '/etc/pki/tls/certs',
   $keypath = '/etc/pki/tls/private',
   $crtmode = '0644',
@@ -18,13 +21,10 @@ define tlsfiles (
   $intcert = false,
   $intjoin = false,
   $pem     = false,
-  $srcdir  = 'tlsfiles',
-  $crt     = '',
-  $key     = '',
-  $intermediate_crt = '',
 ) {
   # Use the definition's title as the CN which is also the file name
   $cn = $title
+  
   # For PEM, we group crt+key(+intcert) in a single file
   if $pem {
     $pemcontent = $intcert ? {

@@ -28,8 +28,8 @@ define tlsfiles (
   # For PEM, we group crt+key(+intcert) in a single file
   if $pem {
     $pemcontent = $intcert ? {
-      false   => template($crt,$key),
-      default => template($crt,$intermediate_crt,$key),
+      false   => $crt+"\n"+$key,
+      default => $crt+"\n"+$intermediate_crt+"\n"+$key,
     }
     # PEM file
     file { "${keypath}/${cn}.pem":
@@ -48,8 +48,8 @@ define tlsfiles (
     }
     # Crt files (+ Intermediate)
     $crtcontent = $intjoin ? {
-      true  => template($crt,$intermediate_crt),
-      false => template($crt),
+      true  => $crt+"\n"+$intermediate_crt,
+      false => $crt,
     }
     file { "${crtpath}/${cn}.crt":
       owner   => $owner,
@@ -63,7 +63,7 @@ define tlsfiles (
         owner   => $owner,
         group   => $group,
         mode    => $crtmode,
-        content => template($intermediate_crt),
+        content => $intermediate_crt,
       }
     }
   }

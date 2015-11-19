@@ -2,33 +2,30 @@
 #
 # Manage Private Key Infrastructure (PKI) Transport Layer Security (TLS) files.
 #
-# Sample Usage :
-#  # Files would be inside mymodulename/templates/tlsfiles/
-#  tlsfile { 'www.example.com':
-#    srcdir => 'mymodulename/tlsfiles',
-#  }
-#
 define tlsfiles (
+  $crt,
+  $key = false,
+  $intermediate_crt = '',
   $crtpath = '/etc/pki/tls/certs',
   $keypath = '/etc/pki/tls/private',
   $crtmode = '0644',
   $keymode = '0600',
   $owner   = 'root',
   $group   = 'root',
-  $intcert = false,
-  $intjoin = false,
-  $pem     = false,
-  $srcdir  = 'tlsfiles'
+  $intermediate_crt_name = false,
+  $join_intermediate_crt = false,
+  $want_pem     = false,
 ) {
-  # Use the definition's title as the CN which is also the file name
+  # Use the definition's title the file name
   $cn = $title
-  # For PEM, we group crt+key(+intcert) in a single file
-  if $pem {
-    $pemcontent = $intcert ? {
-      false   => template("${srcdir}/crt/${cn}.crt","${srcdir}/key/${cn}.key"),
-      default => template("${srcdir}/crt/${cn}.crt","${srcdir}/key/${cn}.key","${srcdir}/crt/${intcert}.crt"),
+  
+  # For pem, we group crt+key(+intermediate_crt) in a single file
+  if $want_pem {
+    $pemcontent = $intermediate_crt_name ? {
+      false   => "${crt}\n${key}",
+      default => "${crt}\n${intermediate_crt}\n${key}",
     }
-    # PEM file
+    # Pem file
     file { "${keypath}/${cn}.pem":
       owner   => $owner,
       group   => $group,
@@ -37,16 +34,18 @@ define tlsfiles (
     }
   } else {
     # Key file
-    file { "${keypath}/${cn}.key":
-      owner   => $owner,
-      group   => $group,
-      mode    => $keymode,
-      content => template("${srcdir}/key/${cn}.key"),
+    if $key {
+      file { "${keypath}/${cn}.key":
+        owner   => $owner,
+        group   => $group,
+        mode    => $keymode,
+        content => $key,
+      }
     }
     # Crt files (+ Intermediate)
-    $crtcontent = $intjoin ? {
-      true  => template("${srcdir}/crt/${cn}.crt","${srcdir}/crt/${intcert}.crt"),
-      false => template("${srcdir}/crt/${cn}.crt"),
+    $crtcontent = $join_intermediate_crt ? {
+      true  => "${crt}\n${intermediate_crt}",
+      false => $crt,
     }
     file { "${crtpath}/${cn}.crt":
       owner   => $owner,
@@ -55,12 +54,12 @@ define tlsfiles (
       content => $crtcontent,
     }
     # Intermediate, when not joined
-    if $intcert != false and $intjoin == false {
-      file { "${crtpath}/${intcert}.crt":
+    if $intermediate_crt_name != false and $join_intermediate_crt == false {
+      file { "${crtpath}/${intermediate_crt_name}.crt":
         owner   => $owner,
         group   => $group,
         mode    => $crtmode,
-        content => template("${srcdir}/crt/${intcert}.crt"),
+        content => $intermediate_crt,
       }
     }
   }

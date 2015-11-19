@@ -9,57 +9,42 @@ private keys and certificates.
 The module supports installing intermediate certificates as well as optionally
 joining keys and certificates into single files.
 
+The module supports the use of hiera to feed in certificate files dynamically and securely if using a secure hiera backend such as hiera-eyaml.
+
 * `tlsfiles` : Manage key and certificate
 
 ## Parameters
 
+* `$crt`
+* `$key = false`
+* `$intermediate_crt  = ''`
 * `$crtpath = '/etc/pki/tls/certs'`
 * `$keypath = '/etc/pki/tls/private'`
 * `$crtmode = '0644'`
 * `$keymode = '0600'`
 * `$owner   = 'root'`
 * `$group   = 'root'`
-* `$intcert = false`
-* `$intjoin = false`
-* `$pem     = false`
-* `$srcdir  = 'tlsfiles'`
+* `$intermediate_crt_name = false`
+* `$join_intermediate_crt = false`
+* `$want_pem     = false`
 
 ## Examples
 
-To install keys and certificates present under :
-
-* `mymodulename/templates/tlsfiles/crt/www.example.com.crt`
-* `mymodulename/templates/tlsfiles/key/www.example.com.key`
-* `mymodulename/templates/tlsfiles/crt/IntermediateCA.crt`
-
-In `site.pp` to centralize all of your files :
-
-```puppet
-Tlsfiles { srcdir => 'mymodulename/tlsfiles' }
+In your hiera yaml datafile:
 ```
-
-Install key and certificate files to the default locations :
-
-```puppet
-tlsfiles { 'www.example.com': }
+tlsfiles:
+    "%{trusted.certname}":
+        crt: ENC[PKCS7,MII...snip...]
+        key: ENC[PKCS7,MII...snip...TI=]
+        intermediate_crt: ENC[PKCS7,MII...snip...98M]
+        intcert: "DigiCert"
 ```
-
-Install a PEM file containing key and certificate to a custom location (it will
-be called `www.example.com.pem`) :
-
-```puppet
-tlsfiles { 'www.example.com':
-  keypath => '/etc/foo',
-  pem     => true,
+And in your puppet class:
+```
+class profile::apache {
+    include ::apache
+  
+    $tlsfiles = hiera_hash('tlsfiles')
+    create_resources('tlsfiles',$tlsfiles)
 }
 ```
-
-The same as the above, but including the intermediate CA certificate :
-```puppet
-tlsfiles { 'www.example.com':
-  keypath => '/etc/foo',
-  intcert => 'IntermediateCA',
-  pem     => true,
-}
-```
-

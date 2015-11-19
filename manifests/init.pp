@@ -4,7 +4,7 @@
 #
 define tlsfiles (
   $crt,
-  $key,
+  $key = false,
   $intermediate_crt = '',
   $crtpath = '/etc/pki/tls/certs',
   $keypath = '/etc/pki/tls/private',
@@ -34,11 +34,13 @@ define tlsfiles (
     }
   } else {
     # Key file
-    file { "${keypath}/${cn}.key":
-      owner   => $owner,
-      group   => $group,
-      mode    => $keymode,
-      content => $key,
+    if $key {
+      file { "${keypath}/${cn}.key":
+        owner   => $owner,
+        group   => $group,
+        mode    => $keymode,
+        content => $key,
+      }
     }
     # Crt files (+ Intermediate)
     $crtcontent = $join_intermediate_crt ? {

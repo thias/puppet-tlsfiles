@@ -16,7 +16,7 @@ The module supports the use of hiera to feed in certificate files dynamically an
 ## Parameters
 
 * `$crt`
-* `$key`
+* `$key = false`
 * `$intermediate_crt  = ''`
 * `$crtpath = '/etc/pki/tls/certs'`
 * `$keypath = '/etc/pki/tls/private'`

@@ -1,13 +1,13 @@
 {
   "name": "thias-tlsfiles",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "author": "Matthias Saou",
   "license": "Apache-2.0",
   "summary": "Transport Layer Security (TLS) Files",
   "source": "git://github.com/thias/puppet-tlsfiles",
   "project_page": "https://github.com/thias/puppet-tlsfiles",
   "issues_url": "https://github.com/thias/puppet-tlsfiles/issues",
-  "tags": [ "tls", "ssl", "https" ],
+  "tags": [ "tls", "ssl", "https", "certificate" ],
   "operatingsystem_support": [
     {
     "operatingsystem": "RedHat",
@@ -28,12 +28,8 @@
   ],
   "requirements": [
     {
-    "name": "pe",
-    "version_requirement": "3.x"
-    },
-    {
     "name": "puppet",
-    "version_requirement": ">=2.7.20 <4.1.0"
+    "version_requirement": ">=2.7.20 <4.2.0"
     }
   ],
   "dependencies": [

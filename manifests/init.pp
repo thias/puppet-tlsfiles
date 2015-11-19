@@ -22,8 +22,8 @@ define tlsfiles (
   # For pem, we group crt+key(+intermediate_crt) in a single file
   if $want_pem {
     $want_pemcontent = $intermediate_crt_name ? {
-      false   => $crt+"\n"+$key,
-      default => $crt+"\n"+$intermediate_crt+"\n"+$key,
+      false   => "${crt}\n${key}",
+      default => "${crt}\n${intermediate_crt}\n${key}",
     }
     # want_pem file
     file { "${keypath}/${cn}.want_pem":
@@ -42,7 +42,7 @@ define tlsfiles (
     }
     # Crt files (+ Intermediate)
     $crtcontent = $join_intermediate_crt ? {
-      true  => $crt+"\n"+$intermediate_crt,
+      true  => "${crt}\n${intermediate_crt}",
       false => $crt,
     }
     file { "${crtpath}/${cn}.crt":

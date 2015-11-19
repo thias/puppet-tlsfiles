@@ -21,16 +21,16 @@ define tlsfiles (
   
   # For pem, we group crt+key(+intermediate_crt) in a single file
   if $want_pem {
-    $want_pemcontent = $intermediate_crt_name ? {
+    $pemcontent = $intermediate_crt_name ? {
       false   => "${crt}\n${key}",
       default => "${crt}\n${intermediate_crt}\n${key}",
     }
-    # want_pem file
-    file { "${keypath}/${cn}.want_pem":
+    # Pem file
+    file { "${keypath}/${cn}.pem":
       owner   => $owner,
       group   => $group,
       mode    => $keymode,
-      content => $want_pemcontent,
+      content => $pemcontent,
     }
   } else {
     # Key file

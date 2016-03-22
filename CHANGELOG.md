@@ -1,3 +1,6 @@
+#### 2016-03-22 - 1.0.2
+* Fix error when `$injoin` was true but no `$intcert` was given.
+
 #### 2015-10-07 - 1.0.1
 * Update README.
 * Change to using new metadata.json.

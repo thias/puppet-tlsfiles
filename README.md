@@ -23,6 +23,10 @@ joining keys and certificates into single files.
 * `$intjoin = false`
 * `$pem     = false`
 * `$srcdir  = 'tlsfiles'`
+* `$crtdir  = 'crt'`
+* `$keydir  = 'key'`
+* `crtname  = "${title}.crt"`
+* `keyname  = "${title}.key"`
 
 ## Examples
 

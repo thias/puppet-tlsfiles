@@ -19,17 +19,19 @@ define tlsfiles (
   $intjoin = false,
   $pem     = false,
   $srcdir  = 'tlsfiles',
+  $crtdir  = 'crt',
+  $keydir  = 'key',
+  $crtname = "${title}.crt",
+  $keyname = "${title}.key",
 ) {
-  # Use the definition's title as the CN which is also the file name
-  $cn = $title
   # For PEM, we group crt+key(+intcert) in a single file
   if $pem {
     $pemcontent = $intcert ? {
-      undef   => template("${srcdir}/crt/${cn}.crt","${srcdir}/key/${cn}.key"),
-      default => template("${srcdir}/crt/${cn}.crt","${srcdir}/key/${cn}.key","${srcdir}/crt/${intcert}.crt"),
+      undef   => template("${srcdir}/${crtdir}/${crtname}","${srcdir}/${keydir}/${keyname}"),
+      default => template("${srcdir}/${crtdir}/${crtname}","${srcdir}/${keydir}/${keyname}","${srcdir}/${crtdir}/${intcert}.crt"),
     }
     # PEM file
-    file { "${keypath}/${cn}.pem":
+    file { "${keypath}/${title}.pem":
       owner   => $owner,
       group   => $group,
       mode    => $keymode,
@@ -37,19 +39,19 @@ define tlsfiles (
     }
   } else {
     # Key file
-    file { "${keypath}/${cn}.key":
+    file { "${keypath}/${title}.key":
       owner   => $owner,
       group   => $group,
       mode    => $keymode,
-      content => template("${srcdir}/key/${cn}.key"),
+      content => template("${srcdir}/${keydir}/${keyname}"),
     }
     # Crt files (+ Intermediate)
     if $intcert and $intjoin == true {
-      $crtcontent = template("${srcdir}/crt/${cn}.crt","${srcdir}/crt/${intcert}.crt")
+      $crtcontent = template("${srcdir}/${crtdir}/${crtname}","${srcdir}/${crtdir}/${intcert}.crt")
     } else {
-      $crtcontent = template("${srcdir}/crt/${cn}.crt")
+      $crtcontent = template("${srcdir}/${crtdir}/${crtname}")
     }
-    file { "${crtpath}/${cn}.crt":
+    file { "${crtpath}/${title}.crt":
       owner   => $owner,
       group   => $group,
       mode    => $crtmode,
@@ -61,7 +63,7 @@ define tlsfiles (
         owner   => $owner,
         group   => $group,
         mode    => $crtmode,
-        content => template("${srcdir}/crt/${intcert}.crt"),
+        content => template("${srcdir}/${crtdir}/${intcert}.crt"),
       }
     }
   }

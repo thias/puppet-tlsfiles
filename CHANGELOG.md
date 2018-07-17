@@ -1,3 +1,6 @@
+#### 2018-07-17 - 1.0.3
+* Add parameters for file names and directories (#7, @forgodssake).
+
 #### 2016-03-22 - 1.0.2
 * Fix error when `$injoin` was true but no `$intcert` was given.
 

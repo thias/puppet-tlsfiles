@@ -9,6 +9,7 @@
 #  }
 #
 define tlsfiles (
+  $ensure  = 'present',
   $crtpath = '/etc/pki/tls/certs',
   $keypath = '/etc/pki/tls/private',
   $crtmode = '0644',
@@ -32,6 +33,7 @@ define tlsfiles (
     }
     # PEM file
     file { "${keypath}/${title}.pem":
+      ensure  => $ensure,
       owner   => $owner,
       group   => $group,
       mode    => $keymode,
@@ -40,6 +42,7 @@ define tlsfiles (
   } else {
     # Key file
     file { "${keypath}/${title}.key":
+      ensure  => $ensure,
       owner   => $owner,
       group   => $group,
       mode    => $keymode,
@@ -52,6 +55,7 @@ define tlsfiles (
       $crtcontent = template("${srcdir}/${crtdir}/${crtname}")
     }
     file { "${crtpath}/${title}.crt":
+      ensure  => $ensure,
       owner   => $owner,
       group   => $group,
       mode    => $crtmode,
@@ -60,6 +64,7 @@ define tlsfiles (
     # Intermediate, when not joined
     if $intcert and $intjoin == false {
       file { "${crtpath}/${intcert}.crt":
+        ensure  => $ensure,
         owner   => $owner,
         group   => $group,
         mode    => $crtmode,

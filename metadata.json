@@ -1,6 +1,6 @@
 {
   "name": "thias-tlsfiles",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "author": "Matthias Saou",
   "license": "Apache-2.0",
   "summary": "Transport Layer Security (TLS) Files",
@@ -29,7 +29,7 @@
   "requirements": [
     {
     "name": "puppet",
-    "version_requirement": ">=2.7.20 < 6.0.0"
+    "version_requirement": ">=2.7.20 < 7.0.0"
     }
   ],
   "dependencies": [

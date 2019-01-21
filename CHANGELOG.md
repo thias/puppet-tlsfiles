@@ -1,3 +1,6 @@
+#### 2019-01-21 - 1.0.4
+* Add ensure parameter so certs can be easily deleted (#8, @forgodssake).
+
 #### 2018-07-17 - 1.0.3
 * Add parameters for file names and directories (#7, @forgodssake).
 

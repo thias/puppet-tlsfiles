@@ -16,28 +16,31 @@
 # * We don't need the fullchain, we use cert+chain instead (save on content)
 #
 define tlsfiles::dehydrated (
-  $srcdir,
-  $ensure  = 'present',
-  $crtpath = '/etc/pki/tls/certs',
-  $keypath = '/etc/pki/tls/private',
-  $crtmode = '0644',
-  $keymode = '0600',
-  $owner   = 'root',
-  $group   = 'root',
-  $intcert = "${title}-chain",
-  $intjoin = true,
-  $pem     = false,
+  String $srcdir,
+  Enum['present', 'absent'] $ensure = 'present',
+  String $crtpath = '/etc/pki/tls/certs',
+  String $keypath = '/etc/pki/tls/private',
+  String $crtmode = '0644',
+  String $keymode = '0600',
+  String $owner   = 'root',
+  String $group   = 'root',
+  String $pemfile = "${title}.pem",
+  String $crtfile = "${title}.crt",
+  String $keyfile = "${title}.key",
+  String $intfile = "${title}-chain.crt",
+  Boolean $intjoin = true,
+  Boolean $pem     = false,
 ) {
 
-  # Look for "wildcard.example.com" inside "example.com"
+  # Look for requested "wildcard.example.com" inside "example.com" dir
   $crt = regsubst($title, 'wildcard.', '')
 
   $crtdir = "${srcdir}/${crt}"
 
-  # For PEM, we group crt+key(+intcert) in a single file
+  # For PEM, we group crt+key+int in a single file
   if $pem {
     # PEM file
-    file { "${keypath}/${title}.pem":
+    file { "${keypath}/${pemfile}":
       ensure  => $ensure,
       owner   => $owner,
       group   => $group,
@@ -46,20 +49,20 @@ define tlsfiles::dehydrated (
     }
   } else {
     # Key file
-    file { "${keypath}/${title}.key":
+    file { "${keypath}/${keyfile}":
       ensure  => $ensure,
       owner   => $owner,
       group   => $group,
       mode    => $keymode,
       content => template("${crtdir}/privkey.pem"),
     }
-    # Crt files (+ Intermediate)
+    # Certificate file (+ Intermediate)
     if $intjoin == true {
       $crtcontent = template("${crtdir}/cert.pem","${crtdir}/chain.pem")
     } else {
       $crtcontent = template("${crtdir}/cert.pem")
     }
-    file { "${crtpath}/${title}.crt":
+    file { "${crtpath}/${crtfile}":
       ensure  => $ensure,
       owner   => $owner,
       group   => $group,
@@ -68,7 +71,7 @@ define tlsfiles::dehydrated (
     }
     # Intermediate, when not joined
     if $intjoin == false {
-      file { "${crtpath}/${intcert}.crt":
+      file { "${crtpath}/${intfile}":
         ensure  => $ensure,
         owner   => $owner,
         group   => $group,

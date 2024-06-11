@@ -1,3 +1,5 @@
+* Support renaming output files in tlsfiles::dehydrated.
+
 #### 2024-06-10 - 1.0.5
 * Add tlsfiles::dehydrated to manage dehydrated certs more easily.
 

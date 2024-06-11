@@ -1,3 +1,4 @@
+#### 2024-06-11 - 1.0.6
 * Support renaming output files in tlsfiles::dehydrated.
 
 #### 2024-06-10 - 1.0.5
